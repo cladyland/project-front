@@ -1,0 +1,9 @@
+th, td {
+    border: 1px solid darkblue;
+    padding: 3px;
+}
+
+.pgn-btn-active {
+    color: rgb(223 0 255);
+    background-color: #d7cffd;
+}
