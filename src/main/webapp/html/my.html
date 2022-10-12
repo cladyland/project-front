@@ -30,8 +30,53 @@
         <th>Delete</th>
     </tr>
 </table>
-
 <div id="paging_buttons">Pages:</div>
+<hr>
+<h2>Create new account:</h2>
+<label for="input_new_name">Name: </label>
+<input type="text" id="input_new_name" minlength="1" maxlength="12" required size="12" name="name">
+<br>
+<label for="input_new_title">Title: </label>
+<input type="text" id="input_new_title" minlength="1" maxlength="30" required size="30" name="title">
+<br>
+<label for="select_new_race">Race: </label>
+<select id="select_new_race" name="race">
+    <option value='HUMAN'>HUMAN</option>
+    <option value='DWARF'>DWARF</option>
+    <option value='ELF'>ELF</option>
+    <option value='GIANT'>GIANT</option>
+    <option value='ORC'>ORC</option>
+    <option value='TROLL'>TROLL</option>
+    <option value='HOBBIT'>HOBBIT</option>
+</select>
+<br>
+<label for="select_new_profession">Profession: </label>
+<select id="select_new_profession" name="profession">
+    <option value='WARRIOR'>WARRIOR</option>
+    <option value='ROGUE'>ROGUE</option>
+    <option value='SORCERER'>SORCERER</option>
+    <option value='CLERIC'>CLERIC</option>
+    <option value='PALADIN'>PALADIN</option>
+    <option value='NAZGUL'>NAZGUL</option>
+    <option value='WARLOCK'>WARLOCK</option>
+    <option value='DRUID'>DRUID</option>
+</select>
+<br>
+<label for="input_new_level">Level: </label>
+<input type="number" id="input_new_level" min="1" max="100" name="level">
+<br>
+<label for="select_birth">Birthday: </label>
+<input type="date" id="select_birth" min="2000-01-01" max="3000-12-31" name="birthday">
+<br>
+<label for="select_new_banned">Banned: </label>
+<select id="select_new_banned" name="banned">
+    <option value='false'>false</option>
+    <option value='true'>true</option>
+</select>
+<br>
+<span>
+<button type="submit" onclick="addUser()">Save</button>
+    </span>
 
 <script>
     function playersList(page_number) {
@@ -170,6 +215,38 @@
             + "</select>";
     }
 
+    function addUser() {
+        const data = {
+            name: $("#input_new_name").val(),
+            title: $("#input_new_title").val(),
+            race: $("#select_new_race").val(),
+            profession: $("#select_new_profession").val(),
+            birthday: new Date($("#select_birth").val()).getTime(),
+            banned: $("#select_new_banned").val(),
+            level: $("#input_new_level").val()
+        }
+
+        let url = "/rest/players";
+        $.ajax({
+            type: "POST",
+            url: url,
+            dataType: 'json',
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify(data),
+            async: false,
+            success: function () {
+                $("#input_new_name").val("");
+                $("#input_new_title").val("");
+                $("#select_new_race").val("");
+                $("#select_new_profession").val("");
+                $("#select_birth").val("");
+                $("#select_new_banned").val("");
+                $("#input_new_level").val("");
+                playersList(getCurrentPage());
+            }
+        })
+    }
+
     function saveChanges(id) {
         const data = {
             name: $("#input_name_" + id).val(),
@@ -210,5 +287,4 @@
     }
 </script>
 </body>
-
 </html>
