@@ -131,6 +131,7 @@
     function changeImgs(id) {
         let edit_img = document.getElementById('edit_img_' + id);
         edit_img.src = "img/save.png";
+        $(edit_img).parent().attr('onclick', "saveChanges(" + id + ")");
         $("#button_delete_" + id).css('visibility', "hidden");
     }
 
@@ -161,12 +162,35 @@
             + "</select>";
     }
 
-    function getBanStatusHtml(id){
+    function getBanStatusHtml(id) {
         let ban_id = "select_banned_" + id;
         return "<select id=" + ban_id + " >"
             + "<option value='false'>false</option>"
             + "<option value='true'>true</option>"
             + "</select>";
+    }
+
+    function saveChanges(id) {
+        const data = {
+            name: $("#input_name_" + id).val(),
+            title: $("#input_title_" + id).val(),
+            race: $("#select_race_" + id).val(),
+            profession: $("#select_profession_" + id).val(),
+            banned: $("#select_banned_" + id).val()
+        }
+
+        let url = "/rest/players/" + id;
+        $.ajax({
+            type: "POST",
+            url: url,
+            dataType: 'json',
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify(data),
+            async: false,
+            success: function () {
+                playersList(getCurrentPage());
+            }
+        })
     }
 
     function deleteAccount(id) {
