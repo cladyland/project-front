@@ -1,4 +1,5 @@
 <html>
+
 <head>
     <title>RPG</title>
     <script src=https://code.jquery.com/jquery-3.6.0.min.js></script>
@@ -57,8 +58,8 @@
                     + item.level + "</td><td>"
                     + item.birthday + "</td><td>"
                     + item.banned + "</td><td>"
-                    + "<button id='button_edit_" + item.id + "'>"
-                    + "<img src='img/edit.png' alt='edit'>" + "</button></td><td>"
+                    + "<button id='button_edit_" + item.id + "' onclick='editAccount(" + item.id + ")'>"
+                    + "<img src='img/edit.png' alt='edit' id='edit_img_" + item.id + "'>" + "</button></td><td>"
                     + "<button id='button_delete_" + item.id + "' onclick='deleteAccount(" + item.id + ")'>"
                     + "<img src='img/delete.png' alt='delete'>" + "</button></td>"
                 ).appendTo("#table1");
@@ -95,8 +96,81 @@
         return result;
     }
 
-    function deleteAccount(user_id) {
-        let url = "/rest/players/" + user_id;
+    function editAccount(id) {
+        changeImgs(id);
+
+        let edit_id = "#button_edit_" + id;
+        let current_tr_elem = $(edit_id).parent().parent();
+        let children = current_tr_elem.children();
+
+        let td_name = children[1];
+        td_name.innerHTML = "<input id='input_name_" + id + "' type='text' value='" + td_name.innerHTML + "'>";
+
+        let td_title = children[2];
+        td_title.innerHTML = "<input id='input_title_" + id + "' type='text' value='" + td_title.innerHTML + "'>";
+
+        let td_race = children[3];
+        let race_id = "#select_race_" + id;
+        let current_race = td_race.innerHTML;
+        td_race.innerHTML = getRaceHtml(id);
+        $(race_id).val(current_race).change();
+
+        let td_prof = children[4];
+        let prof_id = "#select_profession_" + id;
+        let current_prof = td_prof.innerHTML;
+        td_prof.innerHTML = getProfessionHtml(id);
+        $(prof_id).val(current_prof).change();
+
+        let td_ban = children[7];
+        let ban_id = "#select_banned_" + id;
+        let current_ban_status = td_ban.innerHTML;
+        td_ban.innerHTML = getBanStatusHtml(id);
+        $(ban_id).val(current_ban_status).change();
+    }
+
+    function changeImgs(id) {
+        let edit_img = document.getElementById('edit_img_' + id);
+        edit_img.src = "img/save.png";
+        $("#button_delete_" + id).css('visibility', "hidden");
+    }
+
+    function getRaceHtml(id) {
+        let race_id = "select_race_" + id;
+        return "<select id=" + race_id + " >"
+            + "<option value='HUMAN'>HUMAN</option>"
+            + "<option value='DWARF'>DWARF</option>"
+            + "<option value='ELF'>ELF</option>"
+            + "<option value='GIANT'>GIANT</option>"
+            + "<option value='ORC'>ORC</option>"
+            + "<option value='TROLL'>TROLL</option>"
+            + "<option value='HOBBIT'>HOBBIT</option>"
+            + "</select>";
+    }
+
+    function getProfessionHtml(id) {
+        let prof_id = "select_profession_" + id;
+        return "<select id=" + prof_id + " >"
+            + "<option value='WARRIOR'>WARRIOR</option>"
+            + "<option value='ROGUE'>ROGUE</option>"
+            + "<option value='SORCERER'>SORCERER</option>"
+            + "<option value='CLERIC'>CLERIC</option>"
+            + "<option value='PALADIN'>PALADIN</option>"
+            + "<option value='NAZGUL'>NAZGUL</option>"
+            + "<option value='WARLOCK'>WARLOCK</option>"
+            + "<option value='DRUID'>DRUID</option>"
+            + "</select>";
+    }
+
+    function getBanStatusHtml(id){
+        let ban_id = "select_banned_" + id;
+        return "<select id=" + ban_id + " >"
+            + "<option value='false'>false</option>"
+            + "<option value='true'>true</option>"
+            + "</select>";
+    }
+
+    function deleteAccount(id) {
+        let url = "/rest/players/" + id;
         $.ajax({
             type: "DELETE",
             url: url,
@@ -112,4 +186,5 @@
     }
 </script>
 </body>
+
 </html>
